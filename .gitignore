@@ -1,0 +1,42 @@
+# Arduino / PlatformIO build artifacts
+build/
+.pio/
+.pioenvs/
+.piolibdeps/
+*.hex
+*.bin
+*.elf
+
+# Arduino IDE
+*.ino.cpp
+*.ino.cpp.d
+*.ino.eep
+
+# OpenSCAD renders (large STL/PNG outputs)
+*.stl
+*.3mf
+*.gcode
+*.png
+!docs/**/*.png    # keep documentation images
+
+# Python (for any calibration analysis scripts)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+
+# Secrets / private config
+*.env
+config.local.h
+wifi_credentials.h
