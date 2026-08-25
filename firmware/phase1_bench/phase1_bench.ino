@@ -5,12 +5,19 @@
 //                NOT ESP32-S3, NOT ESP32-C3 — different pinout, this code
 //                won't work on them without changes.
 //
+// Firmware requirement: ESP32 Arduino Core 3.0 or later.
+//   Core 3.x replaced the old LEDC API (ledcSetup + ledcAttachPin + ledcWrite
+//   with channel numbers) with a simpler pin-addressed API (ledcAttach +
+//   ledcWrite with pin numbers). This sketch uses the new API and will NOT
+//   compile against Core 2.x. Migration guide:
+//   https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html
+//
 // Hardware under test (bench setup):
 //   - 1x IR LED (940 nm, 5mm)                     pulsed at 38 kHz
 //   - 1x Vishay TSOP4838 IR receiver              demodulates the 38 kHz beam
 //   - 1x current-limit resistor (220 Ω)           in series with the IR LED
 //
-// Wiring (see docs/wiring/phase1_bench.svg for the diagram):
+// Wiring (see docs/wiring/phase1_bench.png for the diagram):
 //
 //   ESP32 GPIO 25  --[220Ω]--(+)IR LED(-)-- GND     (emitter, PWM 38 kHz)
 //
@@ -64,7 +71,8 @@ constexpr int PIN_STATUS_LED   = 2;    // ESP32 dev kit built-in LED
 // ----------------------------------------------------------------------------
 // 38 kHz carrier config (LEDC / PWM)
 // ----------------------------------------------------------------------------
-constexpr int    LEDC_CHANNEL_EMITTER = 0;
+// (LEDC_CHANNEL_EMITTER removed — ESP32 Arduino Core 3.x manages channels
+//  internally via ledcAttach(). Left as a comment for git-blame context.)
 constexpr int    LEDC_TIMER_BITS      = 8;         // 8-bit resolution (0-255)
 constexpr double LEDC_FREQ_HZ         = 38000.0;   // 38 kHz — matches TSOP4838
 constexpr int    LEDC_DUTY_50PCT      = 128;       // 128/255 ≈ 50% duty
@@ -149,9 +157,13 @@ void setup() {
                     onTsopChange, CHANGE);
 
     // Set up the 38 kHz PWM carrier on the emitter pin.
-    ledcSetup(LEDC_CHANNEL_EMITTER, LEDC_FREQ_HZ, LEDC_TIMER_BITS);
-    ledcAttachPin(PIN_IR_EMITTER, LEDC_CHANNEL_EMITTER);
-    ledcWrite(LEDC_CHANNEL_EMITTER, LEDC_DUTY_50PCT);
+    // NOTE: requires ESP32 Arduino Core 3.0 or later. Core 2.x used
+    // ledcSetup() + ledcAttachPin() + ledcWrite(channel, duty); Core 3.x
+    // replaced that with a single ledcAttach(pin, freq, bits) + a pin-
+    // addressed ledcWrite(). See the migration guide:
+    //   https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html
+    ledcAttach(PIN_IR_EMITTER, LEDC_FREQ_HZ, LEDC_TIMER_BITS);
+    ledcWrite(PIN_IR_EMITTER, LEDC_DUTY_50PCT);
     Serial.println("38 kHz carrier active on emitter pin. Setup complete.");
     Serial.println();
 }
