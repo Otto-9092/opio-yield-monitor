@@ -1,4 +1,4 @@
-[my README.md](https://github.com/user-attachments/files/31326256/my.README.md)
+[phase1_bench_README_v2.md](https://github.com/user-attachments/files/31430045/phase1_bench_README_v2.md)
 # Phase 1 firmware — bench occlusion detection
 
 Proves the optical sensing works on the bench, before any GPS, Wi-Fi, or combine mounting.
@@ -12,9 +12,17 @@ Proves the optical sensing works on the bench, before any GPS, Wi-Fi, or combine
 - Breadboard + jumper wires
 - USB cable
 
+> **Firmware requirement:** this sketch uses the ESP32 Arduino Core 3.x
+> LEDC API (`ledcAttach()` / `ledcWrite(pin, duty)`). It will **NOT** compile
+> against Core 2.x, which used the older `ledcSetup()` / `ledcAttachPin()`
+> API. Install **esp32 by Espressif Systems, version 3.0.0 or later** from
+> Boards Manager. See
+> [the migration guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html)
+> for background.
+
 ## Wiring
 
-See `docs/wiring/phase1_bench.svg` for the diagram. Summary:
+See `docs/wiring/phase1_bench_wiring.png` for the diagram. Summary:
 
 | From | To | Notes |
 |---|---|---|
@@ -25,7 +33,8 @@ See `docs/wiring/phase1_bench.svg` for the diagram. Summary:
 | TSOP4838 pin 3 (VS) | ESP32 3.3V | Power for the receiver |
 
 TSOP4838 pinout, viewed from the FRONT (dome side facing you):
-```
+
+```text
    ┌───────┐
    │ ◉ ◉ ◉ │     Pin 1 (left):  OUT
    │  ( )  │     Pin 2 (mid):   GND
@@ -43,7 +52,8 @@ If you don't already have Arduino IDE with ESP32 support:
 1. Install **Arduino IDE 2.x** — https://www.arduino.cc/en/software
 2. Open Preferences → "Additional boards manager URLs" and add:
    `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
-3. Tools → Board → Boards Manager → search "esp32" → install "esp32 by Espressif Systems"
+3. Tools → Board → Boards Manager → search "esp32" → install
+   **"esp32 by Espressif Systems"**, **version 3.0.0 or later**
 4. Tools → Board → ESP32 Arduino → **"ESP32 Dev Module"**
 5. Tools → Port → pick the USB serial port that appeared when you plugged in the ESP32
    (on Windows: some ESP32 boards need the CP210x or CH340 USB driver — search for it if the port doesn't show up)
@@ -59,27 +69,36 @@ If you don't already have Arduino IDE with ESP32 support:
 ## Expected serial output
 
 Beam clear, nothing between LED and TSOP:
-```
+
+```json
 {"t_ms":15000,"block_count":0,"total_blocked_us":0,"beam_state":"CLEAR"}
 {"t_ms":16000,"block_count":0,"total_blocked_us":0,"beam_state":"CLEAR"}
 ```
 
 Wave a finger through the beam:
-```
+
+```json
 {"t_ms":17000,"block_count":2,"total_blocked_us":85302,"beam_state":"CLEAR"}
 ```
 
 Hold something between the sensors:
-```
+
+```json
 {"t_ms":18000,"block_count":1,"total_blocked_us":998300,"beam_state":"BLOCKED"}
 ```
 
 Drop a few corn kernels through the beam:
-```
+
+```json
 {"t_ms":19000,"block_count":6,"total_blocked_us":4210,"beam_state":"CLEAR"}
 ```
 
 ## Troubleshooting
+
+**Compile error: `'ledcSetup' was not declared in this scope`**
+- You're on ESP32 Arduino Core 2.x. Upgrade to 3.0.0 or later in
+  Boards Manager. Alternatively (not recommended), pin to Core 2.0.17
+  and use the old-API version of this sketch from git history.
 
 **No serial output at all**
 - Wrong port selected. Check Tools → Port.
@@ -110,4 +129,7 @@ Drop a few corn kernels through the beam:
 - **A photo of the breadboard** so I can sanity-check the wiring
 - **Confirmation of the TSOP polarity** — did `TSOP_ACTIVE_LOW = true` work, or did you have to flip it to false?
 
-Once Phase 1 is verified working, we move to Phase 2: add the DFRobot RTK rover's NMEA input, spin up a Wi-Fi AP, and serve a live-data webpage that your Samsung tablet can hit.
+Once Phase 1 is verified working, we move to Phase 1B (paddle-aware
+signal processing — see `firmware/phase1b_paddle/`) and then Phase 2:
+add the DFRobot RTK rover's NMEA input, spin up a Wi-Fi AP, and serve a
+live-data webpage that your Samsung tablet can hit.
