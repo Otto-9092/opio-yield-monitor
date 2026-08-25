@@ -1,3 +1,4 @@
+[phase1b_paddle_README (1).md](https://github.com/user-attachments/files/31430066/phase1b_paddle_README.1.md)
 # Phase 1B firmware — paddle-aware occlusion detection
 
 Evolves the Phase 1 bench firmware from **"count every beam-break"** to
@@ -5,7 +6,13 @@ Evolves the Phase 1 bench firmware from **"count every beam-break"** to
 
 Same hardware as Phase 1. Same wiring. Different signal-processing model.
 
----
+> **Firmware requirement:** this sketch uses the ESP32 Arduino Core 3.x
+> LEDC API (`ledcAttach()` / `ledcWrite(pin, duty)`). It will **NOT** compile
+> against Core 2.x, which used the older `ledcSetup()` / `ledcAttachPin()`
+> API. Install **esp32 by Espressif Systems, version 3.0.0 or later** from
+> Boards Manager. See
+> [the migration guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html)
+> for background.
 
 ## Why Phase 1B exists (in one paragraph)
 
