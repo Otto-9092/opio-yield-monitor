@@ -78,7 +78,8 @@ constexpr int PIN_STATUS_LED   = 2;    // ESP32 dev kit built-in LED
 // ----------------------------------------------------------------------------
 // 38 kHz carrier config (LEDC / PWM)
 // ----------------------------------------------------------------------------
-constexpr int    LEDC_CHANNEL_EMITTER = 0;
+// (LEDC_CHANNEL_EMITTER removed — ESP32 Arduino Core 3.x manages channels
+//  internally via ledcAttach(). Kept as a comment for git-blame context.)
 constexpr int    LEDC_TIMER_BITS      = 8;
 constexpr double LEDC_FREQ_HZ         = 38000.0;
 constexpr int    LEDC_DUTY_50PCT      = 128;
@@ -211,9 +212,13 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(PIN_TSOP_INPUT),
                     onTsopChange, CHANGE);
 
-    ledcSetup(LEDC_CHANNEL_EMITTER, LEDC_FREQ_HZ, LEDC_TIMER_BITS);
-    ledcAttachPin(PIN_IR_EMITTER, LEDC_CHANNEL_EMITTER);
-    ledcWrite(LEDC_CHANNEL_EMITTER, LEDC_DUTY_50PCT);
+    // NOTE: requires ESP32 Arduino Core 3.0 or later. Core 2.x used
+    // ledcSetup() + ledcAttachPin() + ledcWrite(channel, duty); Core 3.x
+    // replaced that with a single ledcAttach(pin, freq, bits) + a pin-
+    // addressed ledcWrite(). See the migration guide:
+    //   https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html
+    ledcAttach(PIN_IR_EMITTER, LEDC_FREQ_HZ, LEDC_TIMER_BITS);
+    ledcWrite(PIN_IR_EMITTER, LEDC_DUTY_50PCT);
 
     Serial.println("38 kHz carrier active. Setup complete.");
     Serial.println();
