@@ -1,0 +1,39 @@
+# OPiO Yield Monitor — Bench Validation Log
+# Fast finger-wave through IR beam (first successful optical detection)
+# ============================================================================
+# Date:            26/08/2026
+# Firmware:        Phase 1B (paddle-aware occlusion detection)
+# ESP32 board:     AITRIP 30-pin USB-C ESP-WROOM-32 (CP2102)
+# Emitter:         CHANZON 940nm IR LED @ 38 kHz PWM on GPIO 25
+# Receiver:        Vishay TSOP4838 on GPIO 26
+# LED-TSOP gap:    ~3 inches, dome-to-dome, direct line of sight
+# Occluder:        Human finger, waved rapidly through the beam
+# Wiring:          Direct Dupont F-F jumpers, no breadboard
+#
+# Historical note:
+#   This was the FIRST successful test with real optical hardware after
+#   switching from the breadboard build to direct Dupont-jumper connections.
+#   The moment the TSOP was wired, beam_state went to CLEAR — retroactively
+#   proving that the emitter (LED side) had been working correctly all along
+#   during breadboard debugging. The issue was breadboard column continuity,
+#   not the LED or resistor.
+#
+# What the algorithm learned across this segment:
+#   - Fast finger waves at up to ~12.7 events/sec
+#   - baseline_us settled at ~1,400 µs (finger is small, moves fast)
+#   - period_us tracked variations as the finger rate changed
+#   - Signal-to-noise for anomaly detection: ~48× (baseline 1.4 ms vs
+#     an observed 68 ms wide event) — massive margin for detecting
+#     loaded vs unloaded paddles in the field
+# ============================================================================
+
+{"t_ms":517000,"events_seen_total":109,"n_in_window":40,"period_us":78464,"paddles_per_sec":12.74,"baseline_us":1396,"last_width_us":68605,"last_load_us":67209,"avg_load_us":680701.0,"beam_state":"CLEAR"}
+{"t_ms":518000,"events_seen_total":109,"n_in_window":40,"period_us":78464,"paddles_per_sec":12.74,"baseline_us":1396,"last_width_us":68605,"last_load_us":67209,"avg_load_us":680701.0,"beam_state":"CLEAR"}
+{"t_ms":519000,"events_seen_total":109,"n_in_window":40,"period_us":78464,"paddles_per_sec":12.74,"baseline_us":1396,"last_width_us":68605,"last_load_us":67209,"avg_load_us":680701.0,"beam_state":"CLEAR"}
+{"t_ms":520000,"events_seen_total":109,"n_in_window":40,"period_us":78464,"paddles_per_sec":12.74,"baseline_us":1396,"last_width_us":68605,"last_load_us":67209,"avg_load_us":680701.0,"beam_state":"CLEAR"}
+{"t_ms":521000,"events_seen_total":109,"n_in_window":40,"period_us":78464,"paddles_per_sec":12.74,"baseline_us":1396,"last_width_us":68605,"last_load_us":67209,"avg_load_us":680701.0,"beam_state":"CLEAR"}
+{"t_ms":522000,"events_seen_total":109,"n_in_window":40,"period_us":78464,"paddles_per_sec":12.74,"baseline_us":1396,"last_width_us":68605,"last_load_us":67209,"avg_load_us":680701.0,"beam_state":"CLEAR"}
+{"t_ms":523000,"events_seen_total":111,"n_in_window":40,"period_us":147107,"paddles_per_sec":6.80,"baseline_us":1396,"last_width_us":34846,"last_load_us":33450,"avg_load_us":682134.4,"beam_state":"CLEAR"}
+{"t_ms":524000,"events_seen_total":113,"n_in_window":40,"period_us":186241,"paddles_per_sec":5.37,"baseline_us":1396,"last_width_us":51977,"last_load_us":50581,"avg_load_us":684192.6,"beam_state":"CLEAR"}
+{"t_ms":525000,"events_seen_total":114,"n_in_window":40,"period_us":186241,"paddles_per_sec":5.37,"baseline_us":1396,"last_width_us":95212,"last_load_us":93816,"avg_load_us":685282.7,"beam_state":"BLOCKED"}
+{"t_ms":526000,"events_seen_total":116,"n_in_window":40,"period_us":308723,"paddles_per_sec":3.24,"baseline_us":1396,"last_width_us":63267,"last_load_us":61871,"avg_load_us":685905.0,"beam_state":"CLEAR"}
