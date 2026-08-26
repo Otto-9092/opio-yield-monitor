@@ -1,0 +1,51 @@
+# OPiO Yield Monitor — Bench Validation Log
+# Rhythmic occluder wave through IR beam
+# ============================================================================
+# Date:            26/08/2026
+# Firmware:        Phase 1B (paddle-aware occlusion detection)
+# ESP32 board:     AITRIP 30-pin USB-C ESP-WROOM-32 (CP2102, silicon rev 3.1)
+# Emitter:         CHANZON 940nm IR LED @ 38 kHz PWM on GPIO 25
+# Receiver:        Vishay TSOP4838 on GPIO 26
+# LED-TSOP gap:    ~3 inches, dome-to-dome, direct line of sight
+# Occluder:        Hand-held rigid object, waved rhythmically edge-first
+# Wiring:          Direct Dupont F-F jumpers, no breadboard
+# Notes:           This is the "clean" test run — the log includes a loaded-
+#                  paddle simulation spike (2.8 s dwell) near the beginning,
+#                  followed by ~20 rhythmic waves at ~0.88 Hz, ending with
+#                  the occluder removed cleanly (beam returns to CLEAR).
+#
+# What the algorithm learned across this segment:
+#   - period_us          converged to ~1,136,000 µs (~1.13 s per wave)
+#   - baseline_us        converged from 340 ms → 240 ms as bad early data
+#                        aged out of the 40-event window
+#   - paddles_per_sec    steady at 0.88–0.89 (~1% jitter)
+#   - avg_load_us        elevated due to the retained 2.8 s dwell event;
+#                        will decay as more normal events fill the window
+#
+# Loaded-paddle event of interest:
+#   t=190,000 ms         last_width_us = 2,813,919 µs (2.8 seconds)
+#                        vs baseline_us = 340,354 µs → 8.3× ratio
+#                        → clean anomaly signal, exactly what a grain-loaded
+#                          paddle should look like on the real elevator
+# ============================================================================
+
+{"t_ms":190000,"events_seen_total":37,"n_in_window":37,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":340354,"last_width_us":2813919,"last_load_us":2473565,"avg_load_us":1155469.5,"beam_state":"CLEAR"}
+{"t_ms":191000,"events_seen_total":40,"n_in_window":40,"period_us":1135517,"paddles_per_sec":0.88,"baseline_us":267085,"last_width_us":25768,"last_load_us":0,"avg_load_us":1135136.8,"beam_state":"CLEAR"}
+{"t_ms":192000,"events_seen_total":41,"n_in_window":40,"period_us":1135517,"paddles_per_sec":0.88,"baseline_us":267085,"last_width_us":361096,"last_load_us":94011,"avg_load_us":1134113.2,"beam_state":"CLEAR"}
+{"t_ms":193000,"events_seen_total":43,"n_in_window":40,"period_us":1128122,"paddles_per_sec":0.89,"baseline_us":235205,"last_width_us":32431,"last_load_us":0,"avg_load_us":1160359.2,"beam_state":"CLEAR"}
+{"t_ms":194000,"events_seen_total":44,"n_in_window":40,"period_us":1128122,"paddles_per_sec":0.89,"baseline_us":235428,"last_width_us":418352,"last_load_us":182924,"avg_load_us":1161887.0,"beam_state":"CLEAR"}
+{"t_ms":195000,"events_seen_total":44,"n_in_window":40,"period_us":1128122,"paddles_per_sec":0.89,"baseline_us":235428,"last_width_us":418352,"last_load_us":182924,"avg_load_us":1161887.0,"beam_state":"BLOCKED"}
+{"t_ms":196000,"events_seen_total":45,"n_in_window":40,"period_us":1135517,"paddles_per_sec":0.88,"baseline_us":235428,"last_width_us":448270,"last_load_us":212842,"avg_load_us":1163311.8,"beam_state":"BLOCKED"}
+{"t_ms":197000,"events_seen_total":46,"n_in_window":40,"period_us":1135517,"paddles_per_sec":0.88,"baseline_us":235428,"last_width_us":419141,"last_load_us":183713,"avg_load_us":1164284.6,"beam_state":"CLEAR"}
+{"t_ms":198000,"events_seen_total":47,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":235428,"last_width_us":377199,"last_load_us":141771,"avg_load_us":1164290.6,"beam_state":"CLEAR"}
+{"t_ms":199000,"events_seen_total":48,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":235428,"last_width_us":356886,"last_load_us":121458,"avg_load_us":1163775.5,"beam_state":"CLEAR"}
+{"t_ms":200000,"events_seen_total":49,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":239467,"last_width_us":457769,"last_load_us":218302,"avg_load_us":1163610.6,"beam_state":"CLEAR"}
+{"t_ms":201000,"events_seen_total":50,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":239467,"last_width_us":361994,"last_load_us":122527,"avg_load_us":1163385.1,"beam_state":"CLEAR"}
+{"t_ms":202000,"events_seen_total":51,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":240622,"last_width_us":384200,"last_load_us":143578,"avg_load_us":1163288.2,"beam_state":"CLEAR"}
+{"t_ms":203000,"events_seen_total":51,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":240622,"last_width_us":384200,"last_load_us":143578,"avg_load_us":1163288.2,"beam_state":"BLOCKED"}
+{"t_ms":204000,"events_seen_total":52,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":240622,"last_width_us":379622,"last_load_us":139000,"avg_load_us":1163550.1,"beam_state":"BLOCKED"}
+{"t_ms":205000,"events_seen_total":53,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":240622,"last_width_us":414564,"last_load_us":173942,"avg_load_us":1163437.6,"beam_state":"BLOCKED"}
+{"t_ms":206000,"events_seen_total":54,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":240622,"last_width_us":409669,"last_load_us":169047,"avg_load_us":1162874.4,"beam_state":"CLEAR"}
+{"t_ms":207000,"events_seen_total":55,"n_in_window":40,"period_us":1136279,"paddles_per_sec":0.88,"baseline_us":240622,"last_width_us":436376,"last_load_us":195754,"avg_load_us":1164734.8,"beam_state":"CLEAR"}
+{"t_ms":208000,"events_seen_total":56,"n_in_window":40,"period_us":1138331,"paddles_per_sec":0.88,"baseline_us":241375,"last_width_us":493345,"last_load_us":251970,"avg_load_us":1167591.1,"beam_state":"CLEAR"}
+{"t_ms":209000,"events_seen_total":57,"n_in_window":40,"period_us":1138331,"paddles_per_sec":0.88,"baseline_us":241375,"last_width_us":419063,"last_load_us":177688,"avg_load_us":1168392.2,"beam_state":"CLEAR"}
